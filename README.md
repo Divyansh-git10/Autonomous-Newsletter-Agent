@@ -1,5 +1,8 @@
 # Autonomous Newsletter Agent
 
+**Live Demo:** https://autonomous-newsletter-agent.onrender.com
+**GitHub Repository:** https://github.com/Divyansh-git10/Autonomous-Newsletter-Agent
+
 A mini autonomous AI agent, built with **LangGraph**, that turns a plain-English
 goal into a weekly newsletter about AI agent news. It researches, summarizes,
 writes, critiques and revises its own output, then either exports it
@@ -9,6 +12,19 @@ request changes first (Human-in-the-Loop mode).
 The pipeline is hardened against hallucination end-to-end: an LLM is never
 allowed to invent facts for an article whose real content could not be
 retrieved. See "Source Grounding & Hallucination Prevention" below.
+
+## Live Demo
+
+- **App:** https://autonomous-newsletter-agent.onrender.com
+- **Repository:** https://github.com/Divyansh-git10/Autonomous-Newsletter-Agent
+- **Deployment platform:** [Render](https://render.com/) (free tier web service)
+
+The app is deployed as-is from this repository -- enter a goal, choose
+**Fully Autonomous** or **Human-in-the-Loop** in the sidebar, and click
+**Run Newsletter Agent** (see "Running the Frontend" below for what each
+mode does). Note: on Render's free tier the service spins down after
+inactivity, so the first request after a while can take up to ~30-60
+seconds to wake up.
 
 ## Assignment Objective
 
@@ -544,7 +560,9 @@ Get a free Groq API key at https://console.groq.com/.
 ## Installation
 
 ```bash
-# from the project root
+git clone https://github.com/Divyansh-git10/Autonomous-Newsletter-Agent.git
+cd Autonomous-Newsletter-Agent
+
 python -m venv .venv
 
 # Windows
@@ -671,34 +689,33 @@ This app is a single Streamlit process -- `app.py` calls
 `run_newsletter_agent()` in-process, so there is no separate backend/API
 and therefore no CORS or API-base-URL configuration to manage.
 
-**Option A -- Streamlit Community Cloud (simplest, no code changes):**
+**Deployed on Render** (the platform actually used for the live demo
+above): a Render **Web Service** connected directly to this GitHub
+repository's `main` branch, using:
 
-1. Push this repository to GitHub (see below).
-2. On https://share.streamlit.io, create a new app pointing at this repo
-   and `app.py`.
-3. In the app's **Secrets**, add:
-   ```
-   GROQ_API_KEY = "your_real_key"
-   ```
-4. Deploy. Streamlit Cloud installs `requirements.txt` automatically.
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `streamlit run app.py --server.address 0.0.0.0 --server.port $PORT --server.headless true`
+- **Environment variable:** `GROQ_API_KEY` set in the Render dashboard's
+  Environment tab (never committed -- see "Environment Variables" above)
 
-**Option B -- Any host that runs a `Procfile` (Render, Railway, Heroku-style):**
+Auto-deploy is enabled, so every push to `main` redeploys the live demo.
+To reproduce this deployment yourself:
 
-A `Procfile` is included:
+1. Push this repository to GitHub (see "GitHub Repository" above).
+2. On https://dashboard.render.com, create a new **Web Service** pointing
+   at your fork/clone, runtime **Python**.
+3. Set the Build Command and Start Command exactly as shown above (a
+   matching `Procfile` is also included in the repo for hosts that read
+   it directly, e.g. Railway/Heroku-style platforms).
+4. Add `GROQ_API_KEY` (and optionally `GROQ_MODEL`) under **Environment**.
+5. Deploy.
 
-```
-web: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true
-```
+**Alternative -- Streamlit Community Cloud (no code changes, no Procfile
+needed):** push to GitHub, create a new app at https://share.streamlit.io
+pointing at this repo and `app.py`, and add `GROQ_API_KEY` under the
+app's **Secrets**.
 
-Set `GROQ_API_KEY` (and optionally `GROQ_MODEL`) as environment variables
-in the platform's dashboard -- `python-dotenv`'s `load_dotenv()` is a
-no-op when there's no `.env` file, so real platform-injected environment
-variables are read normally via `os.getenv(...)`.
-
-**Hosted demo URL:** _not yet deployed -- deployment has not been executed
-as part of this submission (no hosting account/credentials were
-available). The steps above are exact and sufficient to deploy; replace
-this line with the live URL once deployed._
+**Hosted demo URL:** https://autonomous-newsletter-agent.onrender.com
 
 ## Known Limitations
 
@@ -747,8 +764,9 @@ this line with the live URL once deployed._
   than a run with quota headroom. **Evaluation or production use should
   use a Groq API key/plan with sufficient token quota** for the number
   and length of articles being summarized.
-- **Hosting has not been executed as part of this submission** -- see
-  "Deployment" above for the exact, ready-to-run steps.
+- **Render's free tier spins the service down after inactivity** --
+  the first request after a period of no traffic can take up to ~30-60
+  seconds while the instance wakes back up; subsequent requests are fast.
 
 ## Model / API Configuration
 
@@ -795,5 +813,5 @@ this line with the live URL once deployed._
   at the Streamlit layer.
 - Persist run history to a small local database.
 - Real email delivery (SMTP) as an alternative to the simulated send.
-- Complete a hosted deployment (see "Deployment" above) and record its
-  URL here.
+- Upgrade off Render's free tier (or add a keep-alive ping) to avoid the
+  cold-start delay noted in "Known Limitations".
