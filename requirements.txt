@@ -1,0 +1,26 @@
+# Core agent framework
+langchain==1.4.0
+langchain-core==1.6.3
+langgraph==1.2.11
+
+# LLM provider (Groq -- see tools/llm_utils.py to swap providers)
+langchain-groq==1.1.3
+
+# Frontend
+streamlit==1.63.0
+
+# Research / extraction tools
+feedparser==6.0.14
+httpx==0.28.1
+beautifulsoup4==4.15.0
+trafilatura==2.2.0
+
+# Config
+python-dotenv==1.2.3
+
+# Newsletter HTML rendering (added during review: replaces the old
+# escaped-Markdown-in-<pre> HTML export with real rendered HTML)
+markdown==3.7
+
+# Testing
+pytest==8.3.3

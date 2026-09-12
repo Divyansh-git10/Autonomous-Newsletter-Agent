@@ -1,0 +1,23 @@
+# Environment / secrets
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+pytest-cache-files-*/
+
+# Generated newsletters -- keep only the curated final demo as
+# submission evidence; every other run-generated file stays ignored.
+outputs/*
+!outputs/.gitkeep
+!outputs/newsletter_final_demo.md
+!outputs/newsletter_final_demo.html
+
+# OS / IDE junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.log
